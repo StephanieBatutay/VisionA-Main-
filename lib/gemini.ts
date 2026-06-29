@@ -2,7 +2,7 @@ import * as FileSystem from "expo-file-system/legacy";
 
 const GEMINI_KEY = process.env.EXPO_PUBLIC_GEMINI_KEY;
 
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`;
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_KEY}`;
 
 export const ANALYSIS_PROMPT = `
 Analyze this image. Identify:
@@ -59,8 +59,19 @@ export async function analyzeImage(
   });
 
   if (!response.ok) {
+    const errorText = await response.text();
+
+    console.log("====================================");
+    console.log("Gemini Status:", response.status);
+    console.log("Gemini Error:", errorText);
+    console.log("====================================");
+
     throw new Error(`Gemini API Error: ${response.status}`);
   }
 
-  return await response.json();
+  const json = await response.json();
+
+  console.log("Gemini Success:", JSON.stringify(json, null, 2));
+
+  return json;
 }
