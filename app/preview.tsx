@@ -1,10 +1,42 @@
+import { imageToBase64 } from "@/lib/gemini";
 import { router, useLocalSearchParams } from "expo-router";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+    Alert,
+    Image,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+} from "react-native";
 
 export default function PreviewScreen() {
   const { photoUri } = useLocalSearchParams<{
     photoUri: string;
   }>();
+
+  async function handleAnalyze() {
+    try {
+      if (!photoUri) {
+        Alert.alert("Error", "No photo found.");
+        return;
+      }
+
+      const base64Image = await imageToBase64(photoUri);
+
+      // Temporary checkpoint for Phase 4
+      console.log("Base64 Length:", base64Image.length);
+
+      router.push({
+        pathname: "/result",
+        params: {
+          base64Image,
+        },
+      });
+    } catch (error) {
+      console.error(error);
+      Alert.alert("Error", "Failed to process the image.");
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -22,15 +54,7 @@ export default function PreviewScreen() {
           <Text style={styles.buttonText}>Retake</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.analyzeButton}
-          onPress={() =>
-            router.push({
-              pathname: "/result",
-              params: { photoUri },
-            })
-          }
-        >
+        <TouchableOpacity style={styles.analyzeButton} onPress={handleAnalyze}>
           <Text style={styles.buttonText}>Analyze</Text>
         </TouchableOpacity>
       </View>

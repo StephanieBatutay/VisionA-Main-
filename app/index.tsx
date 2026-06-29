@@ -1,5 +1,5 @@
-import CameraScreen from "./camera";
+import { Redirect } from "expo-router";
 
 export default function Index() {
-  return <CameraScreen />;
+  return <Redirect href="/camera" />;
 }
