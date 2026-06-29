@@ -1,4 +1,5 @@
 import { CameraView, useCameraPermissions } from "expo-camera";
+import { router } from "expo-router";
 import { useRef, useState } from "react";
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
@@ -16,13 +17,17 @@ export default function CameraScreen() {
         quality: 0.7,
       });
 
-      console.log("Captured Image:", result.uri);
-
       setPhoto(result.uri);
 
-      Alert.alert("Success", "Picture captured!");
+      router.push({
+        pathname: "/preview",
+        params: {
+          photoUri: result.uri,
+        },
+      });
     } catch (error) {
       console.error(error);
+      Alert.alert("Error", "Failed to capture image.");
     }
   }
 
